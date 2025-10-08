@@ -5,9 +5,9 @@
 #define t r->p
 #define a r[(t+1)->n]
 #define b r[(t+2)->n]
-typedef struct M{int n;struct M *p;}m;m r[8192],i;int main(){t=r+256;i=t;r['1'].n=1;r['~'].p=r;r['>'].p=r['<'];while((i++)->n=getchar());while(t->n){switch(t->n){k('-',a.n-=b.n)k('<',a.n=a.n<b.n)k('i',a.n=getchar())k('o',putchar(a.n))k('r',a.p=b.p->p;a.n=b.p->n)k('w',b.p->n=a.n;b.p->p=a.p)k('j',a.p+=a.n)k('m',a.p=malloc(sizeof(m)*a.n))k('f',free(a.p))}t+=3;}}
-//mov  0 to a: w0>w<a
-//move 1 to b: w1>w<b
-//move 1 to c: w1>w<c
-//negate    c: -acwa>w<c
-//add 1 to  b: -bc
+typedef struct M{int n;struct M *p;}m;m r[8192],*i;int main(){t=r+256;i=t;r['0'].n=0;r['1'].n=1;r['~'].p=r;r['>'].p=r+'<';while((i++)->n=getchar());while(t->n){switch(t->n){k('-',a.n-=b.n)k('<',a.n=a.n<b.n)k('i',a.n=getchar())k('o',putchar(a.n))k('r',a.p=b.p->p;a.n=b.p->n)k('w',b.p->n=a.n;b.p->p=a.p)k('j',a.p+=a.n)k('m',a.p=malloc(sizeof(m)*a.n))k('f',free(a.p))}t+=3;}}
+//mov 0 to  b: w0>w<b
+//mov 1 to  a: w1>w<a
+//mov 1 to  c: w1>w<c
+//negate    c: -bcwb>w<c
+//add 1 to  a: -ac
