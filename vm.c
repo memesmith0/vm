@@ -5,4 +5,4 @@
 #define t r->p
 #define a r[(t+1)->n]
 #define b r[(t+2)->n]
-typedef struct M{int n;struct M *p;}m;m r[8192],i;t=r+256;i=t;int main(){while((i++)->n=getchar());while(t->n){switch(t->n){k('-',a.n-=b.n)k('<',a.n=a.n<b.n)k('i',a.n=getchar())k('o',putchar(a.n))k('w',b.p->n=a.p;b.p->p=a.p)k('j',a.p+=a.n)k('m',a.p=malloc(sizeof(m)*a.n))k('f',free(a.p))}t+=3;}}
+typedef struct M{int n;struct M *p;}m;m r[8192],i;int main(){t=r+256;i=t;while((i++)->n=getchar());while(t->n){switch(t->n){k('-',a.n-=b.n)k('<',a.n=a.n<b.n)k('i',a.n=getchar())k('o',putchar(a.n))k('w',b.p->n=a.n;b.p->p=a.p)k('j',a.p+=a.n)k('m',a.p=malloc(sizeof(m)*a.n))k('f',free(a.p))}t+=3;}}
