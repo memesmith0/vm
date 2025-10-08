@@ -9,18 +9,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define k(x,y)case x:y;break;
-#define g t->p
-#define a r[(t+1)->n]
-#define b r[(t+2)->n]
+#define  g r->p
+#define a r[(g+1)->n]
+#define b r[(g+2)->n]
 int main(){
-typedef struct M{int n;struct M *p;}m; //dynamic datastructure
- m r[8192],*t=&r[256];
-  
-  for(int i=8192;i--;){r[i].p=&r[1];r[i].n=1;} //sanitize memory
-  
-  while('x'!=((g++)->n=getchar())); //fetch instructions until x
+  int i=8192;typedef struct M{int n;struct M *p;}m; //dynamic datastructure
+  m r[8192],*t=&r[256];
+  while(i--){r[i].p=&r[1];r[i].n=1;} //sanitize memory
+  g=t;
+  i=8192-256;while('x'!=((t++)->n=getchar())); //fetch instructions until x
 
-  r[0].p=t;t=&r[0];g=&r[256];
+
   
   while(g->n){
     switch(g->n){
@@ -28,7 +27,7 @@ typedef struct M{int n;struct M *p;}m; //dynamic datastructure
 	k('<',a.n=a.n<b.n) //lessthan
 	k('i',a.n=getchar()) //input
 	k('o',putchar(a.n))  //output
-	k('b',a.p->p=b.p->p;a.p->.n=b.p->n) //be
+	k('b',a.p->p=b.p->p;a.p->n=b.p->n) //be
 	k('j',a.p+=a.n) //jump
 	k('a',a.p=malloc(sizeof(m)*a.n)) //malloc
 	k('f',free(a.p))} //free
