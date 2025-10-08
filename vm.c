@@ -1,4 +1,4 @@
-//vm.c gpl2 john morris beck
+//vm.c gpl2 john morris beckp
 #include <stdio.h>
 #include <stdlib.h>
 #define k(x,y)case x:y;break;
@@ -10,7 +10,7 @@ int main(){
   
   for(int i=8192;i--;){r[i].p=&r[1];r[i].n=0;} //sanitize memory
   
-  t=&r[256];i=t;r['0'].n=0;r['1'].n=1;r['~'].p=r;r['>'].p=&r['<'];
+  t=&r[256];i=t;r['1'].n=1;
   
   while('x'!=((i++)->n=getchar())); //fetch instructions from stdin until 'x'
   
@@ -22,8 +22,9 @@ int main(){
 	k('o',putchar(a.n))  //output
 	k('r',a.p=b.p->p;a.n=b.p->n) //read
 	k('w',b.p->n=a.n;b.p->p=a.p) //write
+	k('m',b.p=a.p;b.n=a.n)
 	k('j',a.p+=a.n) //jump
-	k('m',a.p=malloc(sizeof(m)*a.n)) //malloc
+	k('a',a.p=malloc(sizeof(m)*a.n)) //malloc
 	k('f',free(a.p))} //free
     t+=3;
   }
