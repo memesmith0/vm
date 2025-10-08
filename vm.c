@@ -1,39 +1,37 @@
 //vm.c gpl2 john morris beckp
+//test io gcc vm.c -o vm && echo "io_oo_xj" | ./vm
+//create -1                    : -n1-n1
+//create 0                     : -01
+//add 1 and 1                  : -2n-2n
+//create the number 32         : -an-an-an-b1-ba-c1-cb-cb-d1
+//                             : -dc-e1-ed-ed-f1-fe-g1-gf-gf
+//mov a to b                   : -h1-hg-hg-hg-xh-zh-znbxb
 #include <stdio.h>
 #include <stdlib.h>
 #define k(x,y)case x:y;break;
+#define g t->p
 #define a r[(t+1)->n]
 #define b r[(t+2)->n]
-typedef struct M{int n;struct M *p;}m; //dynamic datastructure
-m r[8192],*i,*t=&r[0];
 int main(){
+typedef struct M{int n;struct M *p;}m; //dynamic datastructure
+ m r[8192],*t=&r[256];
   
-  for(int i=8192;i--;){r[i].p=&r[1];r[i].n=0;} //sanitize memory
+  for(int i=8192;i--;){r[i].p=&r[1];r[i].n=1;} //sanitize memory
   
-  t=&r[256];i=t;r['1'].n=1;
+  while('x'!=((g++)->n=getchar())); //fetch instructions until x
+
+  r[0].p=t;t=&r[0];g=&r[256];
   
-  while('x'!=((i++)->n=getchar())); //fetch instructions from stdin until 'x'
-  
-  while(t->n){
-    switch(t->n){
+  while(g->n){
+    switch(g->n){
       k('-',a.n-=b.n) //sub
 	k('<',a.n=a.n<b.n) //lessthan
 	k('i',a.n=getchar()) //input
 	k('o',putchar(a.n))  //output
-	k('r',a.p=b.p->p;a.n=b.p->n) //read
-	k('w',b.p->n=a.n;b.p->p=a.p) //write
-	k('m',b.p=a.p;b.n=a.n)
+	k('b',a.p->p=b.p->p;a.p->.n=b.p->n) //be
 	k('j',a.p+=a.n) //jump
 	k('a',a.p=malloc(sizeof(m)*a.n)) //malloc
 	k('f',free(a.p))} //free
-    t+=3;
+    g+=3;
   }
 }
-//mov 0 to  b: w0>w<b
-//mov 1 to  a: w1>w<a
-//mov 1 to  c: w1>w<c
-//negate    c: -bcwb>w<c
-//add 1 to  a: -ac_
-
-//test io
-//io_oo_xj
