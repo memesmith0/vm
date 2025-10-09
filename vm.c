@@ -23,7 +23,7 @@ int main(){
       k('-',a.n-=b.n) //sub
 	k('<',a.n=a.n<b.n) //lessthan
 	k('i',a.n=getchar()) //input
-	k('o',putchar(a.n))  //output
+	k('o',putchar(a.n);fflush(stdout))  //output
 	k('b',a.p->p=b.p->p;a.p->n=b.p->n) //be
 	k('j',a.p+=a.n) //jump
 	k('a',a.p=malloc(sizeof(m)*a.n)) //malloc
