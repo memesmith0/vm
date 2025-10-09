@@ -8,13 +8,11 @@
 #define f g[d]
 #define w r[c]
 #define y r[d]
-#define u(x) ((void*)x)
-#define q(x) {void* a=w;x;w=a;}
 int main(){
   int c,d,e,j,z[256],*h=z,*s=h,i=256,x=1,g[256];
   //there is a newline and a semicolon between tehse declarations.
   void* r[256];
-  while(--i){g[i]=1;r[i]=(void*)&r[1];}
+  while(--i){g[i]=1;r[i]=&r[1];}
   while('\n'!=(*s++=getc(stdin)));h=z;
   while(x){
     c=*(h+1);d=*(h+2);e=*h;j=3;
@@ -22,7 +20,7 @@ int main(){
       k('-',v=v-f)//sub
 	k(1,v=v<f)//lt
 	k(2,h=(int*)w;j=0)//funcall
-	k(3,w=(void*)((char*)w+(long)v))//add to a pointer.
+	k(3,w=(void*)((char*)w+(int)v))//add to pointerp
       k(4,w=y)//bp
 	k(5,v=f)//bn
 	k(6,{w=malloc(f);f=(w==NULL);})//malloc
