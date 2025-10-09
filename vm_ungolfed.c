@@ -1,137 +1,134 @@
-//vm.c john morris beck - Refactored for Readability
-// The license to use this code is gpl2, found at gnu.org
-// compile: with gcc -std=c99 -O3 -march=native -flto vm_readable.c -o vm
-//
-// This is a minimal, single-file, register-based Virtual Machine designed for speed
-// and compactness. It uses 3-slot instructions: [Opcode, Register A, Register B].
-//https://github.com/memesmith0/vm/
+// VM Core - Refactored for Readability
+// Author: John Morris Beck
+// License: GPLv2 (found at gnu.org)
+// Compile with: gcc -std=c99 -O3 -march=native -flto vm_readable_refactored.c -o vm
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
 
-// --- Core VM Abstraction Macros ---
+// --- MACROS FOR READABILITY AND COMPACTNESS ---
 
-// INSTRUCTION: Defines a case handler for an opcode in the dispatch switch.
-// x = opcode symbol/value, y = C code body. This replaces the golfed 'k' macro.
-#define INSTRUCTION(opcode, body) case opcode: body; break;
+// Define the handler block structure: case X: Y; break;
+#define OP_HANDLER(op_code, operation) case op_code: { operation; } break;
 
-// Register/Operand Abstraction: Maps register indices (reg_a, reg_b) to the actual storage arrays.
-// This abstract layer makes the instruction implementation cleaner.
-#define OP_REG_A      GPR_INT_REGISTERS[reg_a]  // Value in General Purpose Register A (Read/Write)
-#define OP_REG_B      GPR_INT_REGISTERS[reg_b]  // Value in General Purpose Register B (Read Only for most ops)
-#define PTR_REG_A     RES_PTR_REGISTERS[reg_a]  // Pointer/Resource in Register A (Used for memory/I/O)
+// Macros to simplify access to register values based on the currently loaded indices (a and b)
+// Note: These macros use 'a' and 'b' (now reg_a_idx and reg_b_idx) which are loaded once per loop.
+#define PTR_REG_A_VAL       ptr_registers[reg_a_idx]    // Pointer Register A (for memory operations)
+#define INT_REG_A_VAL       int_registers[reg_a_idx]    // Integer Register A (destination/source)
+#define INT_REG_B_VAL       int_registers[reg_b_idx]    // Integer Register B (source/size)
 
-// DISPATCH_LOOP: Contains the entire fetch-decode-execute cycle and the full instruction set.
-// The arguments (OP_SUB, OP_LT, etc.) are the opcode values used in the bytecode.
-#define DISPATCH_LOOP(OP_SUB, OP_LT, OP_JUMP, OP_PTR_ADD, OP_MEM_CPY, OP_MOVE, \
-                      OP_MALLOC, OP_FREE, OP_FREAD, OP_FWRITE, OP_FLUSH, OP_HALT) \
-while(is_running) { \
-    /* --- DECODE PHASE (3-slot instruction format) --- */ \
-    /* IP points to the Opcode. */ \
-    opcode = *IP; \
-    /* The next two slots are register indices (Operands A and B). */ \
-    reg_a = *(IP + 1); \
-    reg_b = *(IP + 2); \
-    /* Assume a standard instruction length of 3 slots. */ \
-    IP_INCREMENT = 3; \
-    \
-    /* --- EXECUTE PHASE (Instruction Dispatch) --- */ \
-    switch(opcode) { \
-        /* --- ARITHMETIC / LOGIC --- */ \
-        INSTRUCTION(OP_SUB, OP_REG_A = OP_REG_A - OP_REG_B) \
-        INSTRUCTION(OP_LT, OP_REG_A = (OP_REG_A < OP_REG_B)) /* Stores 0 or 1 in Reg A */ \
-        \
-        /* --- CONTROL FLOW --- */ \
-        INSTRUCTION(OP_JUMP, { \
-            /* Jumps to the address stored in the Resource Register A (Pointer Register) */ \
-            IP = (int*)PTR_REG_A; \
-            /* Since the new IP is explicitly set, do not increment it after the switch. */ \
-            IP_INCREMENT = 0; \
-        }) \
-        INSTRUCTION(OP_HALT, is_running = 0) \
-        \
-        /* --- POINTER/MEMORY MANIPULATION --- */ \
-        INSTRUCTION(OP_PTR_ADD, PTR_REG_A = (void*)((char*)PTR_REG_A + (int)OP_REG_A)) \
-        INSTRUCTION(OP_MEM_CPY, memcpy(RES_PTR_REGISTERS[reg_b], PTR_REG_A, OP_REG_B)) \
-        INSTRUCTION(OP_MOVE, OP_REG_A = OP_REG_B) /* Move integer value from Reg B to Reg A */ \
-        \
-        /* --- HEAP MANAGEMENT --- */ \
-        INSTRUCTION(OP_MALLOC, { \
-            PTR_REG_A = malloc(OP_REG_B); /* Malloc size stored in integer Reg B */ \
-            /* Set Integer Reg B to the result of the allocation (0 or 1 for success/fail). */ \
-            OP_REG_B = (PTR_REG_A == NULL); \
-        }) \
-        INSTRUCTION(OP_FREE, free(RES_PTR_REGISTERS[reg_b])) /* Free memory pointed to by Resource Reg B */ \
-        \
-        /* --- I/O OPERATIONS (Stream access) --- */ \
-        INSTRUCTION(OP_FREAD, fread(PTR_REG_A, 1, OP_REG_B, stdin)) /* Read 'Reg B' bytes into buffer at 'Ptr Reg A' */ \
-        INSTRUCTION(OP_FWRITE, fwrite(PTR_REG_A, 1, OP_REG_B, stdout)) /* Write 'Reg B' bytes from buffer at 'Ptr Reg A' */ \
-        INSTRUCTION(OP_FLUSH, fflush(stdout)) /* Flush stdout buffer */ \
-    } \
-    /* --- FETCH PHASE (Advance Instruction Pointer) --- */ \
-    IP += IP_INCREMENT; \
-}
+// --- GLOBAL STATE ---
 
-// --- VM STATE GLOBAL ARRAYS (256 slots is the VM's limited address space) ---
+// 'counter': Used for initialization loop and temporarily for input size.
+int counter = 256;
 
-// GPR_INT_REGISTERS: General Purpose Registers (Integer storage, size 256).
-int GPR_INT_REGISTERS[256];
+// General Purpose Registers (GPRs):
+// 'int_registers': 256 integer registers (4-byte data).
+// 'ptr_registers': 256 pointer registers (memory addresses).
+int int_registers[256];
+void* ptr_registers[256];
 
-// CODE_MEMORY: The storage for the VM's bytecode instructions (size 256).
-// Instructions are loaded into this array from standard input.
-int CODE_MEMORY[256];
+// Program Memory: Stores the compiled instructions (8KB of space for opcodes/operands).
+// Note: In the golfed version, this was defined as int z[8192].
+int program_memory[8192];
 
-// RES_PTR_REGISTERS: Resource Registers (Void pointer storage, size 256).
-// Used to store pointers to allocated memory, file handles, or instruction addresses (for JUMP).
-void* RES_PTR_REGISTERS[256];
+// Instruction Operand Registers (used locally within the loop for speed):
+// 'reg_a_idx': Index for the destination/source A register (R1).
+// 'reg_b_idx': Index for the source B register (R2) or byte count/size.
+int reg_a_idx, reg_b_idx;
 
-// --- Main Execution Function ---
+// Instruction Pointer (IP) / Execution Flag
+// 'ip': Program counter, points to the current opcode in program_memory.
+// 'is_running': Flag to control the main execution loop (1 = running, 0 = halt).
+int *ip = program_memory;
+int is_running = 1;
 
+// --- MAIN VM EXECUTION ---
 int main() {
-    // Execution state variables
-    int reg_a;          // Register A index (Operand 1: destination/source)
-    int reg_b;          // Register B index (Operand 2: source)
-    int opcode;         // The current instruction being executed
-    int IP_INCREMENT;   // How many slots to advance the Instruction Pointer after execution
-    int counter = 256;  // Loop counter used for initialization and input loading
-
-    // Pointers
-    int *IP = CODE_MEMORY;       // Instruction Pointer: points to the current instruction in CODE_MEMORY
-    int *input_ptr = IP;         // Pointer used temporarily to load the bytecode from stdin
-
-    int is_running = 1; // Execution flag (1 = running, 0 = halt)
-
-    // 1. VM State Initialization (Set all 256 registers to a default state)
-    while(--counter >= 0) {
-        // Default integer register value is 1 (prevents division by zero or other unexpected issues).
-        GPR_INT_REGISTERS[counter] = 1;
-        // All resource pointers point to a known, safe location (RES_PTR_REGISTERS[1]).
-        RES_PTR_REGISTERS[counter] = &RES_PTR_REGISTERS[1];
+    // Note: The variable names below match the original single-character names
+    //       to show the direct correspondence, but are used in a much clearer way.
+    
+    // --- 1. INITIALIZE REGISTERS (256 iterations) ---
+    // Initialize all 256 int_registers to 1.
+    // Initialize all 256 ptr_registers to point to register 1's address (a safe default).
+    while (counter--) {
+        int_registers[counter] = 1;
+        ptr_registers[counter] = &ptr_registers[1];
     }
-
-    // 2. Load Bytecode from Stdin
-    // Read the very first character from stdin to determine the dispatch mode.
+    
+    // --- 2. LOAD PROGRAM FROM STDIN ---
+    // Read the first character (ignored in this setup)
     counter = getc(stdin);
 
-    // Read the remaining input (the actual bytecode) until a newline ('\n') is found.
-    // The input is read directly into the CODE_MEMORY array (via input_ptr).
-    while ('\n' - (*input_ptr++ = getc(stdin)));
+    // Load instructions from stdin until a newline is found (program ends on first newline)
+    // The instruction set is loaded directly into the program_memory array (z).
+    // The 'counter' variable is repurposed here to track the instruction count (i++).
+    while ('\n' - (program_memory[counter++] = getc(stdin)));
 
-    // Reset instruction pointer to the beginning of the loaded code
-    IP = CODE_MEMORY;
+    // Reset instruction pointer to the beginning of the loaded program.
+    ip = program_memory;
 
-    // 3. Select Instruction Set (Dispatch Mode) and Execute
-    // The first character (stored in counter) selects between the two instruction sets.
-    switch(counter++) {
-        // 'r' mode: Uses symbolic/ASCII characters for opcodes (e.g., '-' for SUB, 'x' for JUMP).
-        // This is highly compact for human-written bytecode.
-        INSTRUCTION('r', DISPATCH_LOOP('-', '<', 'x', 'j', 'b', '?', 'm', 'f', 'i', 'o', '.', 'k'))
+    // --- 3. MAIN EXECUTION LOOP (DISPATCH) ---
+    while (is_running) {
         
-        // Default mode: Uses numeric opcodes 0 through 11.
-        default: DISPATCH_LOOP(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+        // --- FETCH CYCLE ---
+        // 1. Load operands into local variables (CPU registers) for speed.
+        reg_a_idx = *(ip + 1); // Destination/Source Register Index
+        reg_b_idx = *(ip + 2); // Source/Size Register Index
+        
+        // 2. Load the Opcode.
+        int opcode = *ip;
+
+        // --- DECODE & EXECUTE CYCLE (Jump Table Optimization) ---
+        // Opcode 0: Subtract, Opcode 1: Compare, Opcode 2: Jump/Call...
+        switch (opcode) {
+            
+            // 0: SUB - INT_REG_A_VAL = INT_REG_A_VAL - INT_REG_B_VAL
+            OP_HANDLER(0, INT_REG_A_VAL = INT_REG_A_VAL - INT_REG_B_VAL)
+
+            // 1: CMP/SET - INT_REG_A_VAL = (INT_REG_A_VAL < INT_REG_B_VAL)
+            OP_HANDLER(1, INT_REG_A_VAL = INT_REG_A_VAL < INT_REG_B_VAL)
+            
+            // 2: JMP - Set IP to the address stored in PTR_REG_A_VAL.
+            // Note: Compiler must pre-wind jump targets by 3 due to the h+=3 advance below.
+            OP_HANDLER(2, ip = (int*)PTR_REG_A_VAL)
+            
+            // 3: PTR_ADD - PTR_REG_A_VAL = PTR_REG_A_VAL + INT_REG_A_VAL (Byte Address Offset)
+            OP_HANDLER(3, PTR_REG_A_VAL = (void*)((char*)PTR_REG_A_VAL + INT_REG_A_VAL))
+
+            // 4: MEM_COPY - Copy value from PTR_REG_A_VAL to R[reg_b_idx].
+            // Note: The integer value (INT_REG_A_VAL) is used as the size (f=e).
+            OP_HANDLER(4, { INT_REG_B_VAL = INT_REG_A_VAL; ptr_registers[reg_b_idx] = PTR_REG_A_VAL; })
+
+            // 5: MALLOC - Allocate INT_REG_A_VAL bytes and store pointer in R[reg_b_idx].
+            // If allocation fails, set INT_REG_A_VAL (e) to 1.
+            OP_HANDLER(5, {
+                ptr_registers[reg_b_idx] = malloc(INT_REG_A_VAL);
+                INT_REG_A_VAL = (ptr_registers[reg_b_idx] == NULL);
+            })
+
+            // 6: FREE - Free the memory pointed to by PTR_REG_A_VAL.
+            OP_HANDLER(6, free(PTR_REG_A_VAL))
+
+            // 7: READ - Read INT_REG_B_VAL bytes into memory starting at PTR_REG_A_VAL from stdin.
+            OP_HANDLER(7, fread(PTR_REG_A_VAL, 1, INT_REG_B_VAL, stdin))
+            
+            // 8: WRITE - Write INT_REG_B_VAL bytes from PTR_REG_A_VAL to stdout.
+            OP_HANDLER(8, fwrite(PTR_REG_A_VAL, 1, INT_REG_B_VAL, stdout))
+
+            // 9: FLUSH - Flush the stdout buffer.
+            OP_HANDLER(9, fflush(stdout))
+
+            // 10: HALT - Stop execution.
+            OP_HANDLER(10, is_running = 0)
+        }
+        
+        // Advance Instruction Pointer: Fixed advance by 3 to the next instruction.
+        // This relies on jump targets being pre-wound by 3 by the compiler.
+        ip += 3;
     }
 
+    // Explicit return 0 for C standard compliance (though optional in C99 main).
     return 0;
 }
