@@ -27,9 +27,8 @@ int main(){
 	k('.',fflush(stdout)) //finish printing
 	k('b',a.p->p=b.p->p;a.p->n=b.p->n) //be
 	k('j',a.p+=a.n) //jump
-	k('m',a.n?b.p=malloc(sizeof(m)*a.n):free(b.p)) //malloc/free
-    default: _Exit(0);} //free
-    
+	k('m',a.n?b.p=malloc(sizeof(m)*a.n):free(b.p);a.n=b.p==NULL) //malloc/free
+    default: return 0;} //free
     g+=3;
   }
 }
