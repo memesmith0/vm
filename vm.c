@@ -1,4 +1,4 @@
-//vm.c gpl2 john morris beck
+//vm.c john morris beck the license to use this code is gpl2
 //test io gcc vm.c -o vm && echo "io_oo_xj" | ./vm
 //create -1                    : -n1-n1
 //create 0                     : -01
@@ -6,7 +6,7 @@
 //create the number 32         : -an-an-an-b1-ba-c1-cb-cb-d1
 //                             : -dc-e1-ed-ed-f1-fe-g1-gf-gf
 //mov a to b                   : -h1-hg-hg-hg-xh-zh-znbxb
-//echo "-n1-n1-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-onoo_" | ./vm #prints &
+//echo "-n1-n1-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-onoo_.__" | ./vm #prints &
 #include <stdio.h>
 #include <stdlib.h>
 #define k(x,y)case x:y;break;
@@ -27,13 +27,9 @@ int main(){
 	k('.',fflush(stdout)) //finish printing
 	k('b',a.p->p=b.p->p;a.p->n=b.p->n) //be
 	k('j',a.p+=a.n) //jump
-	k('a',a.p=malloc(sizeof(m)*a.n)) //malloc
-	k('f',free(a.p)) //free
+	k('m',a.n?b.p=malloc(sizeof(m)*a.n):free(b.p)) //malloc/free
     default: _Exit(0);} //free
     
     g+=3;
   }
 }
-
-
-
