@@ -1,29 +1,12 @@
-//vm.c john morris beck the license to use this code is gpl2
-//test io gcc vm.c -o vm && echo "io_oo_xj" | ./vm
-//create -1                    : -n1-n1
-//create 0                     : -01
-//add 1 and 1                  : -2n-2n
-//create the number 32         : -an-an-an-b1-ba-c1-cb-cb-d1
-//                             : -dc-e1-ed-ed-f1-fe-g1-gf-gf
-//mov a to b                   : -h1-hg-hg-hg-xh-zh-znbxb
-//echo "-n1-n1-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-onoo_.__" | ./vm #prints &
+//vm.c john morris beck the license to use this code is gpl2 found at gnu.org
+//compile: with gcc -std=c99 -O3 -march=native -flto vm.c -o vm
 #include <stdio.h>
 #include <stdlib.h>
-#define k(x,y)case x:y;break;
-#define g r->p
-#define a r[(g+1)->n]
-#define b r[(g+2)->n]
-int main(){typedef struct M{int n;struct M *p;}m;int i=256*32;m r[i],*t=&r[256];while(i--){r[i-1].p=&r[1];r[i].n=1;}g=t;while('\n'!=((t++)->n=getchar()));
- l:switch(g->n){
-      k('-',a.n-=b.n)
-	k('<',a.n=a.n<b.n)
-	k('i',a.n=getchar())
-	k('o',putchar(a.n))
-	k('.',fflush(stdout))
-	k('b',a.p->p=b.p->p;a.p->n=b.p->n)
-	k('j',a.p+=a.n)
-	k('m',a.n?b.p=malloc(sizeof(m)*a.n):free(b.p);a.n=b.p==NULL)
-    default: return 0;
-    }
-    g+=3;goto l;
-}
+#include <stdint.h>
+#include <string.h>
+#define k(x,y) case x:y;break;
+#define v g[c]
+#define f g[d]
+#define w r[c]
+#define o(rb,rc,rd,re,rf,rg,rh,ri,rj,rk,rl,rm)  while(x){c=*(h+1);d=*(h+2);e=*h;j=3;switch(e){k(rb,v=v-f)k(rc,v=v<f)k(rd,h=(int*)w;j=0)k(re,w=(void*)((char*)w+(int)v))k(rf,memcpy(r[d],w,f))k(rg,v=f)k(rh,{w=malloc(f);f=(w==NULL);})k(ri,free(r[d]))k(rj,fread(w, 1, f, stdin))k(rk,fwrite(w, 1, f, stdout))k(rl,fflush(stdout))k(rm,x=0)}h+=j;}
+int g[256],z[256];void* r[256];int main(){int c,d,e,j,i=256,*h=z,*s=h,x=1;while(--i >= 0){g[i]=1;r[i]=&r[1];}i=getc(stdin);while('\n'!=(*s++=getc(stdin)));h=z;switch((i)++){k('r',o('-','<','x','j','b','?','m','f','i','o','.','k'))default:o(0,1,2,3,4,5,6,7,8,9,10,11)}return 0;}
