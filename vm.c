@@ -28,9 +28,7 @@ int main(){
 	k('j',a.p+=a.n) //jump
 	k('a',a.p=malloc(sizeof(m)*a.n)) //malloc
 	k('f',free(a.p)) //free
-	k('\n',g-=2)
-    case EOF: 
-	k('k',_Exit(0))} //free
+	k(EOF,_Exit(0))} //free
     
     g+=3;
   }
