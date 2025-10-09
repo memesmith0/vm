@@ -13,22 +13,17 @@
 #define g r->p
 #define a r[(g+1)->n]
 #define b r[(g+2)->n]
-int main(){
-  int i=256*32;typedef struct M{int n;struct M *p;}m; //dynamic datastructure
-  m r[i],*t=&r[256];while(i--){r[i-1].p=&r[1];r[i].n=1;}g=t; //setup memory
-  while('\n'!=((t++)->n=getchar())); //fetch instructions
-  
-  while(g->n){
-    switch(g->n){
-      k('-',a.n-=b.n) //sub
-	k('<',a.n=a.n<b.n) //lessthan
-	k('i',a.n=getchar()) //input
-	k('o',putchar(a.n))  //output
-	k('.',fflush(stdout)) //finish printing
-	k('b',a.p->p=b.p->p;a.p->n=b.p->n) //be
-	k('j',a.p+=a.n) //jump
-	k('m',a.n?b.p=malloc(sizeof(m)*a.n):free(b.p);a.n=b.p==NULL) //malloc/free
-    default: return 0;} //free
+int main(){typedef struct M{int n;struct M *p;}m;int i=256*32;m r[i],*t=&r[256];while(i--){r[i-1].p=&r[1];r[i].n=1;}g=t;while('\n'!=((t++)->n=getchar()));
+    while(g->n){switch(g->n){
+      k('-',a.n-=b.n)
+	k('<',a.n=a.n<b.n)
+	k('i',a.n=getchar())
+	k('o',putchar(a.n))
+	k('.',fflush(stdout))
+	k('b',a.p->p=b.p->p;a.p->n=b.p->n)
+	k('j',a.p+=a.n)
+	k('m',a.n?b.p=malloc(sizeof(m)*a.n):free(b.p);a.n=b.p==NULL)
+    default: return 0;}
     g+=3;
   }
 }
