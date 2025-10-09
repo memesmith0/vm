@@ -117,7 +117,7 @@ int main() {
 
     // Read the remaining input (the actual bytecode) until a newline ('\n') is found.
     // The input is read directly into the CODE_MEMORY array (via input_ptr).
-    while ('\n' != (*input_ptr++ = getc(stdin)));
+    while ('\n' - (*input_ptr++ = getc(stdin)));
 
     // Reset instruction pointer to the beginning of the loaded code
     IP = CODE_MEMORY;
