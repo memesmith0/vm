@@ -4,6 +4,7 @@
 //
 // This is a minimal, single-file, register-based Virtual Machine designed for speed
 // and compactness. It uses 3-slot instructions: [Opcode, Register A, Register B].
+//https://github.com/memesmith0/vm/
 
 #include <stdio.h>
 #include <stdlib.h>
