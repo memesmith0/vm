@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define d r[a]
-#define e g[a]
-#define f g[b]
+#define x p[a]
+#define y i[a]
+#define z i[b]
 #define k(x,y) case x:y;break;
-int g[256],z[8192],a=0,b,c;void* r[256];int main(){int *h=z,x=1;*g=1;*r=(void*)r;while('\n'-(z[a++]=getc(stdin)));while(x){a=*(h+1);b=*(h+2);c=*h;switch(c){k(0,e=e-f)k(1,e=e<f)k(2,h=(int*)d)k(3,d=(void*)((char*)d+(int)e))k(4,f=e;r[b]=d)k(5,r[b]=malloc(e);e=(r[b]==NULL))k(6,free(d))k(7,fread(d, 1, f, stdin))k(8,fwrite(d, 1, f, stdout))k(9,fflush(stdout))k(10,x=0)}h+=3;}}
+int a,b,c,i[256],f[8192];void* p[256];int main(){int *t=f,r=3;*i=1;*p=(void*)p;while(r){t+=3;a=*(t+1);b=*(t+2);c=*t;switch(c){k(0,y=y-z)k(1,y=y<z)k(2,t=(int*)x)k(3,x=(void*)((char*)x+(int)y))k(4,z=y;p[b]=x)k(5,p[b]=malloc(y);y=(p[b]==NULL))k(6,free(x))k(7,fread(x,1,z,stdin))k(8,fwrite(x,1,z,stdout))k(9,fflush(stdout))k(10,r=0)k(11,f[r++]=getc(stdin))}}}
+
