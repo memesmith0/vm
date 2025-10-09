@@ -9,17 +9,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define k(x,y)case x:y;break;
-#define  g r->p
+#define g r->p
 #define a r[(g+1)->n]
 #define b r[(g+2)->n]
+#define s sizeof(char)
 int main(){
-  int i=8192;typedef struct M{int n;struct M *p;}m; //dynamic datastructure
-  m r[8192],*t=&r[256];
-  while(i--){r[i].p=&r[1];r[i].n=1;} //sanitize memory
-  g=t;
-  i=8192-256;while('x'!=((t++)->n=getchar())); //fetch instructions until x
-
-
+  int i=s*32,c;typedef struct M{int n;struct M *p;}m; //dynamic datastructure
+  m r[i],*t=&r[s];while(i--){r[i-s].p=&r[1];r[i].n=1;}g=t; //setup memory
+  while(EOF!=(c=((t++)->n=getchar()))&&c!='\n'); //fetch instructions
   
   while(g->n){
     switch(g->n){
@@ -30,7 +27,11 @@ int main(){
 	k('b',a.p->p=b.p->p;a.p->n=b.p->n) //be
 	k('j',a.p+=a.n) //jump
 	k('a',a.p=malloc(sizeof(m)*a.n)) //malloc
-	k('f',free(a.p))} //free
+	k('f',free(a.p)) //free
+	k('\n',g-=2)
+    case EOF: 
+	k('k',_Exit(0))} //free
+    
     g+=3;
   }
 }
