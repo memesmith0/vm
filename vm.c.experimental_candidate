@@ -7,8 +7,9 @@
 #define v g[c]
 #define f g[d]
 #define w r[c]
+int g[256],z[256];void* r[256];
 int main(){
-  int c,d,e,j,i=256,z[i],*h=z,*s=h,x=1,g[i];void* r[i];
+  int c,d,e,j,i=256,z[256],*h=z,*s=h,x=1,g[256];
   while(--i){g[i]=1;r[i]=&r[1];}
   while('\n'!=(*s++=getc(stdin)));h=z;
   while(x){
