@@ -14,7 +14,7 @@
 #define a r[(g+1)->n]
 #define b r[(g+2)->n]
 int main(){typedef struct M{int n;struct M *p;}m;int i=256*32;m r[i],*t=&r[256];while(i--){r[i-1].p=&r[1];r[i].n=1;}g=t;while('\n'!=((t++)->n=getchar()));
-    while(g->n){switch(g->n){
+ l:switch(g->n){
       k('-',a.n-=b.n)
 	k('<',a.n=a.n<b.n)
 	k('i',a.n=getchar())
@@ -23,7 +23,7 @@ int main(){typedef struct M{int n;struct M *p;}m;int i=256*32;m r[i],*t=&r[256];
 	k('b',a.p->p=b.p->p;a.p->n=b.p->n)
 	k('j',a.p+=a.n)
 	k('m',a.n?b.p=malloc(sizeof(m)*a.n):free(b.p);a.n=b.p==NULL)
-    default: return 0;}
-    g+=3;
-  }
+    default: return 0;
+    }
+    g+=3;goto l;
 }
