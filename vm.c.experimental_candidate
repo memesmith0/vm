@@ -1,0 +1,37 @@
+//vm.c john morris beck the license to use this code is gpl2 found at gnu.org
+//compile: with gcc -std=c99 -O3 -march=native -flto vm.c -o vm
+#include <stdio.h>
+#include <stdlib.h>
+#define v r[c]
+#define f r[d]
+#define q(x) {m *a=v.p;x;;}
+#define k(x,y) case x:y;break;
+typedef struct M{int n;struct M *p;}m;
+int i=8192,x=1;m r[8192],*t=&r[256];
+int main(){
+  int c,d,e,j;
+  while(--i){r[i].p=&r[1];r[i].n=1;}
+  register m *p=t;
+  while('\n'!=((t++)->n=getc(stdin)));
+  while(x){
+    c=(p+1)->n;d=(p+2)->n;e=p->n;j=3;
+    switch(e){
+      k('-',v.n=v.n-(int)f.n)
+	k(1,v.n=(int)v.n<(int)f.n)//lt
+	k(2,p=v.p;j=0)//funcall
+	k(3,q(a+=v.n;v.p=a))//add to a pointer.
+	k(4,q(m *b=f.p;a->p=b->p))//bp
+	k(5,q(m *b=f.p;a->n=b->n))//bn
+	k(6,{m *a=malloc(sizeof(m)*f.n);v.p=a;f.n=(a==NULL);})//malloc
+	k(7,{m *a=f.p;free(a);})//free
+	k(8,e=getc(stdin);v.n=e)//i
+	k('o',putchar(v.n))//o
+	k('.',fflush(stdout))//finish printing
+	k(11,x=0)//shutdown
+      k('k', x=0)
+    }
+
+    p+=j;}
+  
+  return 0;}
+//echo "-n1-n1-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-onoo_k__" | ./vm #prints &
