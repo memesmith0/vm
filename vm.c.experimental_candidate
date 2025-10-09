@@ -2,36 +2,37 @@
 //compile: with gcc -std=c99 -O3 -march=native -flto vm.c -o vm
 #include <stdio.h>
 #include <stdlib.h>
-#define v r[c]
-#define f r[d]
-#define q(x) {m *a=v.p;x;;}
+#include <stdint.h>
 #define k(x,y) case x:y;break;
-typedef struct M{int n;struct M *p;}m;
-int i=8192,x=1;m r[8192],*t=&r[256];
+#define v g[c]
+#define f g[d]
+#define w r[c]
+#define y r[d]
+#define u(x) ((void*)x)
+#define q(x) {void* a=w;x;w=a;}
 int main(){
-  int c,d,e,j;
-  while(--i){r[i].p=&r[1];r[i].n=1;}
-  register m *p=t;
-  while('\n'!=((t++)->n=getc(stdin)));
+  int c,d,e,j,z[256],*h=z,*s=h,i=256,x=1,g[256];
+  //there is a newline and a semicolon between tehse declarations.
+  void* r[256];
+  while(--i){g[i]=1;r[i]=(void*)&r[1];}
+  while('\n'!=(*s++=getc(stdin)));h=z;
   while(x){
-    c=(p+1)->n;d=(p+2)->n;e=p->n;j=3;
+    c=*(h+1);d=*(h+2);e=*h;j=3;
     switch(e){
-      k('-',v.n=v.n-(int)f.n)
-	k(1,v.n=(int)v.n<(int)f.n)//lt
-	k(2,p=v.p;j=0)//funcall
-	k(3,q(a+=v.n;v.p=a))//add to a pointer.
-	k(4,q(m *b=f.p;a->p=b->p))//bp
-	k(5,q(m *b=f.p;a->n=b->n))//bn
-	k(6,{m *a=malloc(sizeof(m)*f.n);v.p=a;f.n=(a==NULL);})//malloc
-	k(7,{m *a=f.p;free(a);})//free
-	k(8,e=getc(stdin);v.n=e)//i
-	k('o',putchar(v.n))//o
+      k('-',v=v-f)//sub
+	k(1,v=v<f)//lt
+	k(2,h=(int*)w;j=0)//funcall
+	k(3,w=(void*)((char*)w+(long)v))//add to a pointer.
+      k(4,w=y)//bp
+	k(5,v=f)//bn
+	k(6,{w=malloc(f);f=(w==NULL);})//malloc
+	      k(7,free(y))//free
+	      k(8,e=getc(stdin);v=e)//i
+	k('o',putchar(v))//o
 	k('.',fflush(stdout))//finish printing
-	k(11,x=0)//shutdown
-      k('k', x=0)
+	      k(11,x=0)//shutdown
+	      k('k', x=0)
     }
-
-    p+=j;}
-  
+    h+=j;}
   return 0;}
 //echo "-n1-n1-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-on-onoo_k__" | ./vm #prints &
