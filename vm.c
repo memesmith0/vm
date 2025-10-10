@@ -1,5 +1,4 @@
-//vm.c john morris beck the license to use this code is gpl2 found at gnu.org
-//compile with:gcc -std=c99 -O3 -march=native -flto vm.c -o vm
+//gcc -std=c99 -O3 -march=native -flto vm.c -o vm#license:john morris beck gpl2 @ gnu.org
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
