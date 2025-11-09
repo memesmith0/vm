@@ -1,4 +1,6 @@
 //gcc -O3 -march=native -flto vm.c#license:john morris beck gpl2 @ gnu.org
+//in case i die future design envolves incresasing register space for speedy caching, and replacing
+//malloc and free for mmap an munmap, and make the files be in /dev/shm or fallback to /dev/tmp if shm is unavailable
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
