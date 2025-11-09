@@ -1,6 +1,8 @@
 //gcc -O3 -march=native -flto vm.c#license:john morris beck gpl2 @ gnu.org
 //in case i die future design envolves incresasing register space for speedy caching, and replacing
 //malloc and free for mmap an munmap, and make the files be in /dev/shm or fallback to /dev/tmp if shm is unavailable
+//a special naming scheme with guarnteed unique filenames based on timestamp, process id, and a random string from /dev/urandom allows
+//for optional shared memory between vm processes. shared memory is intended to be used immutably where possible else with locks
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
